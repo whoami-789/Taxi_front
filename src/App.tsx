@@ -6,6 +6,8 @@ import ClientPage from './pages/ClientPage';
 import {AdminPage} from './pages/AdminPage';
 import {LoginPage} from './pages/LoginPage';
 import {RegisterPage} from './pages/RegisterPage';
+import {RootPage} from "./pages/RootPage";
+import CarsList from "./pages/CarsList";
 
 function App() {
     return (
@@ -14,8 +16,10 @@ function App() {
                 <Routes>
                     <Route path="/client" element={<ClientPage />} />
                     <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/root" element={<RootPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/cars" element={<CarsList />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

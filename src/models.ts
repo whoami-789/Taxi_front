@@ -5,6 +5,8 @@ export interface Car {
     date_release: string;
     price: number;
     carClasses: string[];
+    img: string;
+    taken?: boolean;
     order: any[]; // Предполагается, что это массив заказов, замените на соответствующий тип данных
 }
 

@@ -11,6 +11,8 @@ interface Car {
     brand: string;
     date_release: string;
     price: number;
+    img: string;
+    taken?: boolean;
     carClasses: ["КОМФОРТ" | "ЭКОНОМ" | "БИЗНЕС"];
     order: any[];
 }

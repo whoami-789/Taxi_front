@@ -1,12 +1,12 @@
 import React from 'react';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input } from 'antd';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {Button, Checkbox, Form, Input} from 'antd';
 import axios from 'axios';
-import { useAuth } from '../AuthContext';
-import { useNavigate } from 'react-router-dom';
+import {useAuth} from '../AuthContext';
+import {useNavigate} from 'react-router-dom';
 
 export function LoginPage() {
-    const { login } = useAuth();
+    const {login} = useAuth();
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
@@ -32,6 +32,9 @@ export function LoginPage() {
                 case 'MANAGER':
                     navigate('/admin');
                     break;
+                case 'SUPERVISOR':
+                    navigate('/root');
+                    break;
                 // Добавьте другие роли по мере необходимости
                 default:
                     console.error('Unknown role:', userRole);
@@ -47,25 +50,25 @@ export function LoginPage() {
         <Form
             name="normal_login"
             className="login-form max-w-sm mx-auto mt-10"
-            initialValues={{ remember: true }}
+            initialValues={{remember: true}}
             onFinish={onFinish}
         >
             <Form.Item
                 name="username"
-                rules={[{ required: true, message: 'Please input your Username!' }]}
+                rules={[{required: true, message: 'Please input your Username!'}]}
             >
                 <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    prefix={<UserOutlined className="site-form-item-icon"/>}
                     placeholder="Username"
                     className="w-full"
                 />
             </Form.Item>
             <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Please input your Password!' }]}
+                rules={[{required: true, message: 'Please input your Password!'}]}
             >
                 <Input
-                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    prefix={<LockOutlined className="site-form-item-icon"/>}
                     type="password"
                     placeholder="Password"
                     className="w-full"
