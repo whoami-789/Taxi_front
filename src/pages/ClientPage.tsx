@@ -15,6 +15,7 @@ interface Car {
     taken?: boolean;
     carClasses: ["КОМФОРТ" | "ЭКОНОМ" | "БИЗНЕС"];
     order: any[];
+    image: File[]; // Добавим свойство для изображения
 }
 
 const ClientPage: React.FC = () => {

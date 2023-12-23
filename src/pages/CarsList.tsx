@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal } from "antd";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { Car } from "../models";
 import CarsForm from "../forms/CarsForm";
 
@@ -41,19 +41,23 @@ const CarsList: React.FC<CarsListProps> = () => {
       .catch((error) => console.error("Error deleting car:", error));
   };
 
-  const handleFormSubmit = (values: Car, carId: number | null) => {
-    const endpoint = carId
-    ? `http://localhost:5050/api/cars/${carId}`
-    : "http://localhost:5050/api/cars";
-    const method = carId ? "put" : "post";
+const handleFormSubmit = async (formData: FormData, carId: number | null, config: AxiosRequestConfig) => {
+  try {
+    await axios.post(
+      carId
+        ? `http://localhost:5050/api/cars/${carId}`
+        : "http://localhost:5050/api/cars",
+      formData,
+      config
+    );
 
-    axios[method](endpoint, values)
-    .then(() => {
-      fetchCars();
-      setVisible(false);
-    })
-    .catch((error) => console.error("Error submitting form:", error));
-  };
+    fetchCars();
+    setVisible(false);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+};
+
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },

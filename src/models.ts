@@ -7,7 +7,9 @@ export interface Car {
     carClasses: string[];
     img: string;
     taken?: boolean;
-    order: any[]; // Предполагается, что это массив заказов, замените на соответствующий тип данных
+    order: any[];
+    image: File[]; // Добавим свойство для изображения
+    // Предполагается, что это массив заказов, замените на соответствующий тип данных
 }
 
 export interface User {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Upload, message, Select } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosRequestConfig, AxiosResponse } from "axios";
 import { Car } from "../models";
 
 interface CarsFormProps {
   carId: number | null;
-  onFormSubmit: (values: Car, carId: number | null) => void;
+  onFormSubmit: (values: FormData, carId: number | null, config: AxiosRequestConfig) => void;
 }
 
 const CarsForm: React.FC<CarsFormProps> = ({ carId, onFormSubmit }) => {
@@ -20,17 +20,16 @@ const CarsForm: React.FC<CarsFormProps> = ({ carId, onFormSubmit }) => {
     carClasses: [],
     img: "",
     order: [],
+    image: [] // Добавим свойство для изображения
   });
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+ useEffect(() => {
     if (carId) {
       axios
         .get(`http://localhost:5050/api/cars/${carId}`)
         .then((response) => {
-          setCar(response.data);
-          setImageUrl(response.data.img);
           form.setFieldsValue(response.data);
         })
         .catch((error) => console.error("Error fetching car:", error));
@@ -46,12 +45,9 @@ const CarsForm: React.FC<CarsFormProps> = ({ carId, onFormSubmit }) => {
   };
 
   const handleChange = (info: any) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
     if (info.file.status === "done") {
-      setLoading(false);
+      // Обновляем form при успешной загрузке изображения
+      form.setFieldsValue({ image: [info.file.originFileObj] });
     }
   };
 
@@ -74,13 +70,31 @@ const CarsForm: React.FC<CarsFormProps> = ({ carId, onFormSubmit }) => {
 
 
   const onFinish = (values: Car) => {
-    if (typeof values.carClasses === 'string') {
-      values.carClasses = [values.carClasses];
-    }
+    // Создаем новый объект FormData
+  const formData = new FormData();
+
+  // Добавляем каждое поле в FormData
+  formData.append("name", values.name);
+  formData.append("brand", values.brand);
+  formData.append("price", values.price.toString());
+  formData.append("date_release", values.date_release);
+  formData.append("carClasses", Array.isArray(values.carClasses) ? values.carClasses.join(",") : values.carClasses);
+  
+  // Если есть изображение, добавляем его в FormDataт
+  if (values.image && Array.isArray(values.image) && values.image.length > 0) {
+    formData.append("image", values.image[0]);
+  }
     
-    const valuesWithImageUrl = { ...values, img: imageUrl || "" };
-    onFormSubmit(valuesWithImageUrl, carId);
+    const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    };
+
+    onFormSubmit(formData, carId, config);
+
   };
+
   
   const getUploadButton = () => (
       <div>
@@ -142,15 +156,15 @@ const CarsForm: React.FC<CarsFormProps> = ({ carId, onFormSubmit }) => {
                   {imageUrl ? (
                       <img src={imageUrl} alt="Car" style={{ width: "100%" }} />
                       ) : (
-                          getUploadButton()
-                          )}
+                        getUploadButton()
+                        )}
               </Upload>
           </Form.Item>
-          <Form.Item>
-              <Button type="default" htmlType="submit">
-                  Submit
-              </Button>
-          </Form.Item>
+        <Form.Item>
+          <Button type="default" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
       </Form>
       );
 };
